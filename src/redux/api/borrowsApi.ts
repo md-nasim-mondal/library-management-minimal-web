@@ -11,18 +11,18 @@ export const borrowsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Book", "Borrow"],
     }),
-    returnBook: builder.mutation<void, string>({
+    returnBook: builder.mutation({
       query: (id) => ({
         url: `/borrows/${id}/return`,
         method: "PATCH",
       }),
       invalidatesTags: ["Book", "Borrow"],
     }),
-    getBorrowSummary: builder.query<IBorrowSummary[], void>({
-      query: () => "/borrows/summary",
+    getBorrowSummary: builder.query({
+      query: () => "/borrow",
       providesTags: ["Borrow"],
     }),
-    getBorrowsByBook: builder.query<IBorrow[], string>({
+    getBorrowsByBook: builder.query({
       query: (bookId) => `/borrows/book/${bookId}`,
       providesTags: (_result, _error, bookId) => [
         { type: "Borrow", id: bookId },

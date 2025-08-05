@@ -19,11 +19,15 @@ export interface IBorrow {
   returned: boolean;
 }
 
-export interface IBorrowSummary {
+export interface IBorrowBook {
   bookId: string;
   title: string;
   isbn: string;
-  totalBorrowed: number;
+}
+
+export interface IBorrowSummary {
+  book: IBorrowBook;
+  totalQuantity: number;
 }
 
 export interface IBorrowBookRequest {
