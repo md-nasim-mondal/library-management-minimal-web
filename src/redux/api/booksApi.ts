@@ -1,27 +1,16 @@
 import { baseApi } from "./baseApi"
 
-interface Book {
-  id: string
-  title: string
-  author: string
-  genre: string
-  isbn: string
-  description: string
-  copies: number
-  available: boolean
-}
-
 export const booksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getBooks: builder.query<Book[], void>({
+    getBooks: builder.query({
       query: () => '/books',
       providesTags: ['Book'],
     }),
-    getBookById: builder.query<Book, string>({
+    getBookById: builder.query({
       query: (id) => `/books/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'Book', id }],
     }),
-    addBook: builder.mutation<Book, Omit<Book, 'id'>>({
+    addBook: builder.mutation({
       query: (book) => ({
         url: '/books',
         method: 'POST',
@@ -29,7 +18,7 @@ export const booksApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Book'],
     }),
-    updateBook: builder.mutation<Book, Book>({
+    updateBook: builder.mutation({
       query: ({ id, ...rest }) => ({
         url: `/books/${id}`,
         method: 'PUT',
@@ -37,7 +26,7 @@ export const booksApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_result, _error, { id }) => [{ type: 'Book', id }],
     }),
-    deleteBook: builder.mutation<void, string>({
+    deleteBook: builder.mutation({
       query: (id) => ({
         url: `/books/${id}`,
         method: 'DELETE',

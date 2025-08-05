@@ -1,29 +1,9 @@
+import type { IBorrow, IBorrowBookRequest, IBorrowSummary } from "@/types";
 import { baseApi } from "./baseApi";
-
-interface Borrow {
-  id: string;
-  bookId: string;
-  quantity: number;
-  dueDate: string;
-  returned: boolean;
-}
-
-interface BorrowSummary {
-  bookId: string;
-  title: string;
-  isbn: string;
-  totalBorrowed: number;
-}
-
-interface BorrowBookRequest {
-  bookId: string;
-  quantity: number;
-  dueDate: string;
-}
 
 export const borrowsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    borrowBook: builder.mutation<Borrow, BorrowBookRequest>({
+    borrowBook: builder.mutation<IBorrow, IBorrowBookRequest>({
       query: ({ bookId, ...body }) => ({
         url: `/borrows/${bookId}`,
         method: "POST",
@@ -38,11 +18,11 @@ export const borrowsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Book", "Borrow"],
     }),
-    getBorrowSummary: builder.query<BorrowSummary[], void>({
+    getBorrowSummary: builder.query<IBorrowSummary[], void>({
       query: () => "/borrows/summary",
       providesTags: ["Borrow"],
     }),
-    getBorrowsByBook: builder.query<Borrow[], string>({
+    getBorrowsByBook: builder.query<IBorrow[], string>({
       query: (bookId) => `/borrows/book/${bookId}`,
       providesTags: (_result, _error, bookId) => [
         { type: "Borrow", id: bookId },
