@@ -1,4 +1,4 @@
-import type { IBorrow, IBorrowBookRequest, IBorrowSummary } from "@/types";
+import type { IBorrow, IBorrowBookRequest } from "@/types";
 import { baseApi } from "./baseApi";
 
 export const borrowsApi = baseApi.injectEndpoints({
