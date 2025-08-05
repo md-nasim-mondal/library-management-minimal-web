@@ -8,7 +8,7 @@ export interface IBook {
   available: boolean;
   description?: string;
   image?: string;
-  publishedYear?: number;
+  publishedYear?: number | null;
 }
 
 export interface IBorrow {

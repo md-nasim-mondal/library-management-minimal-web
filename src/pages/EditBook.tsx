@@ -1,5 +1,8 @@
-import { useAddBookMutation } from "@/redux/api/booksApi";
-import { useNavigate } from "react-router";
+import {
+  useGetBookByIdQuery,
+  useUpdateBookMutation,
+} from "@/redux/api/booksApi";
+import { useNavigate, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import {
@@ -13,14 +16,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "react-hot-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { IBook } from "@/types";
 
-const CreateBook = () => {
-  const [addBook, { isLoading }] = useAddBookMutation();
+const EditBook = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const { data, isLoading: isBookLoading } = useGetBookByIdQuery(id || "");
+  const [updateBook, { isLoading }] = useUpdateBookMutation();
 
-  const form = useForm<Omit<IBook, "_id">>({
-    defaultValues: {
+  const book = data?.data;
+
+  const form = useForm<IBook>({
+    values: book || {
+      _id: "",
       title: "",
       author: "",
       genre: "",
@@ -28,25 +37,59 @@ const CreateBook = () => {
       description: "",
       copies: 1,
       available: true,
-      publishedYear: null,
+      publishedYear: new Date().getFullYear(),
       image: "",
     },
   });
 
-  const onSubmit = async (values: Omit<IBook, "_id">) => {
+  const onSubmit = async (values: IBook) => {
     try {
-      await addBook(values).unwrap();
-      toast.success("Book added successfully");
-      navigate("/books");
+      await updateBook(values).unwrap();
+      toast.success("Book updated successfully");
+      navigate(`/books/${values._id}`);
     } catch (error) {
-      toast.error("Failed to add book");
+      toast.error("Failed to update book");
     }
   };
+
+  if (isBookLoading) {
+    return (
+      <div className='container mx-auto p-4 max-w-4xl'>
+        <div className='bg-card text-card-foreground rounded-lg border shadow-sm p-6'>
+          <Skeleton className='h-8 w-1/3 mb-6' />
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className='space-y-2'>
+                <Skeleton className='h-5 w-1/4' />
+                <Skeleton className='h-9 w-full' />
+              </div>
+            ))}
+          </div>
+          <div className='space-y-2 mb-6'>
+            <Skeleton className='h-5 w-1/4' />
+            <Skeleton className='h-24 w-full' />
+          </div>
+          <div className='flex justify-end gap-2'>
+            <Skeleton className='h-9 w-24' />
+            <Skeleton className='h-9 w-24' />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!book) {
+    return (
+      <div className='container mx-auto p-4 max-w-4xl text-center'>
+        Book not found
+      </div>
+    );
+  }
 
   return (
     <div className='container mx-auto p-4 max-w-4xl'>
       <div className='bg-card text-card-foreground rounded-lg border shadow-sm p-6'>
-        <h1 className='text-2xl font-bold mb-6'>Add New Book</h1>
+        <h1 className='text-2xl font-bold mb-6'>Edit Book</h1>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
@@ -116,16 +159,12 @@ const CreateBook = () => {
                     <FormControl>
                       <Input
                         type='number'
+                        min='1600'
                         max={new Date().getFullYear()}
-                        min={1600}
                         {...field}
                         value={field.value ?? ""}
                         onChange={(e) =>
-                          field.onChange(
-                            e.target.value === ""
-                              ? null
-                              : parseInt(e.target.value)
-                          )
+                          field.onChange(parseInt(e.target.value))
                         }
                       />
                     </FormControl>
@@ -143,7 +182,7 @@ const CreateBook = () => {
                     <FormControl>
                       <Input
                         type='number'
-                        min='1'
+                        min='0'
                         {...field}
                         onChange={(e) =>
                           field.onChange(parseInt(e.target.value))
@@ -192,11 +231,11 @@ const CreateBook = () => {
               <Button
                 type='button'
                 variant='outline'
-                onClick={() => navigate("/books")}>
+                onClick={() => navigate(`/books/${book._id}`)}>
                 Cancel
               </Button>
               <Button type='submit' disabled={isLoading}>
-                {isLoading ? "Adding..." : "Add Book"}
+                {isLoading ? "Saving..." : "Save Changes"}
               </Button>
             </div>
           </form>
@@ -206,4 +245,4 @@ const CreateBook = () => {
   );
 };
 
-export default CreateBook;
+export default EditBook;
