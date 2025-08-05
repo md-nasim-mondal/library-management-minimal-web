@@ -9,6 +9,8 @@ export interface IBook {
   description?: string;
   image?: string;
   publishedYear?: number | null;
+  updatedAt?: Date | "";
+  createdAt?: Date | "";
 }
 
 export interface IBorrow {

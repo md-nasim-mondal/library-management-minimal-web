@@ -44,11 +44,14 @@ const EditBook = () => {
 
   const onSubmit = async (values: IBook) => {
     try {
-      await updateBook(values).unwrap();
+      const { updatedAt, createdAt, ...rest } = values;
+      console.log(rest);
+      await updateBook(rest).unwrap();
       toast.success("Book updated successfully");
       navigate(`/books/${values._id}`);
     } catch (error) {
       toast.error("Failed to update book");
+      console.log(error);
     }
   };
 

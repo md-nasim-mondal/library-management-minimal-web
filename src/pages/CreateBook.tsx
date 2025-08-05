@@ -14,6 +14,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "react-hot-toast";
 import type { IBook } from "@/types";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const CreateBook = () => {
   const [addBook, { isLoading }] = useAddBookMutation();
@@ -40,6 +47,7 @@ const CreateBook = () => {
       navigate("/books");
     } catch (error) {
       toast.error("Failed to add book");
+      console.log(error);
     }
   };
 
@@ -84,11 +92,24 @@ const CreateBook = () => {
                 name='genre'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Genre*</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Book genre' {...field} />
-                    </FormControl>
-                    <FormMessage />
+                    <FormLabel>Genre</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className='w-full'>
+                          <SelectValue placeholder='Select a genre to set' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className='w-full'>
+                        <SelectItem value='FICTION'>FICTION</SelectItem>
+                        <SelectItem value='NON_FICTION'>NON_FICTION</SelectItem>
+                        <SelectItem value='SCIENCE'>SCIENCE</SelectItem>
+                        <SelectItem value='HISTORY'>HISTORY</SelectItem>
+                        <SelectItem value='BIOGRAPHY'>BIOGRAPHY</SelectItem>
+                        <SelectItem value='FANTASY'>FANTASY</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </FormItem>
                 )}
               />

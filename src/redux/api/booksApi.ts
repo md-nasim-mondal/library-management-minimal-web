@@ -1,40 +1,46 @@
-import { baseApi } from "./baseApi"
+import { baseApi } from "./baseApi";
 
 export const booksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getBooks: builder.query({
-      query: () => '/books',
-      providesTags: ['Book'],
+      query: () => "/books",
+      providesTags: ["Book"],
     }),
     getBookById: builder.query({
       query: (id) => `/books/${id}`,
-      providesTags: (_result, _error, id) => [{ type: 'Book', id }],
+      providesTags: (_result, _error, id) => [{ type: "Book", id }],
     }),
     addBook: builder.mutation({
       query: (book) => ({
-        url: '/books',
-        method: 'POST',
+        url: "/books",
+        method: "POST",
         body: book,
       }),
-      invalidatesTags: ['Book'],
+      invalidatesTags: ["Book"],
     }),
     updateBook: builder.mutation({
-      query: ({ id, ...rest }) => ({
-        url: `/books/${id}`,
-        method: 'PUT',
-        body: rest,
-      }),
-      invalidatesTags: (_result, _error, { id }) => [{ type: 'Book', id }],
+      query: ({ _id, ...rest }) => {
+        if (!_id || typeof _id !== "string" || !_id.trim()) {
+          throw new Error("Book _id is required and must be a valid string for update.");
+        }
+        return {
+          url: `/books/${_id}`,
+          method: "PUT",
+          body: rest,
+        };
+      },
+      invalidatesTags: (_result, _error, { _id }) =>
+        _id ? [{ type: "Book", id: _id }] : [],
     }),
     deleteBook: builder.mutation({
       query: (id) => ({
         url: `/books/${id}`,
-        method: 'DELETE',
+        method: "DELETE",
       }),
-      invalidatesTags: ['Book'],
+      invalidatesTags: ["Book"],
     }),
   }),
-})
+});
 
 export const {
   useGetBooksQuery,
@@ -42,4 +48,4 @@ export const {
   useAddBookMutation,
   useUpdateBookMutation,
   useDeleteBookMutation,
-} = booksApi
+} = booksApi;

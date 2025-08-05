@@ -5,7 +5,7 @@ export const borrowsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     borrowBook: builder.mutation<IBorrow, IBorrowBookRequest>({
       query: ({ bookId, ...body }) => ({
-        url: `/borrows/${bookId}`,
+        url: `/borrow/${bookId}`,
         method: "POST",
         body,
       }),
@@ -13,7 +13,7 @@ export const borrowsApi = baseApi.injectEndpoints({
     }),
     returnBook: builder.mutation({
       query: (id) => ({
-        url: `/borrows/${id}/return`,
+        url: `/borrow/${id}/return`,
         method: "PATCH",
       }),
       invalidatesTags: ["Book", "Borrow"],
@@ -23,7 +23,7 @@ export const borrowsApi = baseApi.injectEndpoints({
       providesTags: ["Borrow"],
     }),
     getBorrowsByBook: builder.query({
-      query: (bookId) => `/borrows/book/${bookId}`,
+      query: (bookId) => `/borrow/book/${bookId}`,
       providesTags: (_result, _error, bookId) => [
         { type: "Borrow", id: bookId },
       ],
