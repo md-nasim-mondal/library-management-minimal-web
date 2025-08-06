@@ -6,6 +6,7 @@ import { Link, useParams } from "react-router";
 import { useState } from "react";
 import BookDeleteAlertDialog from "@/components/modals/BookDeleteAlertDialog";
 import BorrowModal from "@/components/modals/BorrowModal";
+import toast from "react-hot-toast";
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -51,6 +52,11 @@ const BookDetails = () => {
     setIsDeleteDialogOpen(true);
   };
   const handleBorrowModal = () => {
+    if (book.copies === 0 || !book.available) {
+          return toast.error(
+            "This Book is not available for borrowing! Borrow another one."
+          );
+        }
     setIsDeleteDialogOpen(false);
     setIsBorrowDialogOpen(true);
   };
@@ -159,7 +165,7 @@ const BookDetails = () => {
       {/* Delete Confirmation Dialog */}
       <BookDeleteAlertDialog
         isDeleteDialogOpen={isDeleteDialogOpen}
-        selectedBook={book}
+        book={book}
         setIsDeleteDialogOpen={setIsDeleteDialogOpen}
       />
 

@@ -40,9 +40,6 @@ export interface IBorrowBookRequest {
 
 export interface IBookCardProps {
   book: IBook;
-  setIsDeleteDialogOpen: (isDeleteDialogOpen: boolean) => void;
-  setIsBorrowDialogOpen: (isBorrowDialogOpen: boolean) => void;
-  setSelectedBook: (book: IBook) => void;
   showDescription?: boolean;
 }
 
@@ -64,7 +61,7 @@ export interface IBorrowSummaryTableProps {
 export interface IBookDeleteAlertDialogProps {
   isDeleteDialogOpen: boolean;
   setIsDeleteDialogOpen: (isDeleteDialogOpen: boolean) => void;
-  selectedBook: IBook | undefined;
+  book: IBook | undefined;
 }
 
 export interface IBorrowModalProps {

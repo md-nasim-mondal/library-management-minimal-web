@@ -15,7 +15,7 @@ import type { IBookDeleteAlertDialogProps } from "@/types";
 const BookDeleteAlertDialog = ({
   isDeleteDialogOpen,
   setIsDeleteDialogOpen,
-  selectedBook,
+  book,
 }: IBookDeleteAlertDialogProps) => {
   const navigate = useNavigate();
   const [deleteBook] = useDeleteBookMutation();
@@ -37,14 +37,14 @@ const BookDeleteAlertDialog = ({
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete "
-            {selectedBook?.title || ""}" from our database.
+            {book?.title || ""}" from our database.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => handleDelete(selectedBook?._id || "")}
-            className='bg-destructive text-destructive-foreground hover:bg-destructive/90'>
+            onClick={() => handleDelete(book?._id || "")}
+            className='bg-destructive text-white hover:bg-destructive/90'>
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>

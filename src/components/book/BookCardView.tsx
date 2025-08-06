@@ -1,46 +1,14 @@
-import type { IBook, IBookCardViewProps } from "@/types";
-import { useState } from "react";
-import BookDeleteAlertDialog from "../modals/BookDeleteAlertDialog";
+import type { IBookCardViewProps } from "@/types";
 import BookCard from "./BookCard";
-import BorrowModal from "../modals/BorrowModal";
 
-const BookCardView = ({
-  books,
-  showDescription = false,
-}: IBookCardViewProps) => {
-  const [selectedBook, setSelectedBook] = useState<IBook | undefined>(
-    undefined
-  );
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isBorrowDialogOpen, setIsBorrowDialogOpen] = useState(false);
-
+const BookCardView = ({ books }: IBookCardViewProps) => {
   return (
     <>
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4'>
         {books?.map((book, index) => (
-          <BookCard
-            key={index + 1}
-            book={book}
-            setIsDeleteDialogOpen={setIsDeleteDialogOpen}
-            setIsBorrowDialogOpen={setIsBorrowDialogOpen}
-            setSelectedBook={setSelectedBook}
-            showDescription={showDescription}
-          />
+          <BookCard key={index + 1} book={book} />
         ))}
       </div>
-      {/* Delete Confirmation Dialog */}
-      <BookDeleteAlertDialog
-        isDeleteDialogOpen={isDeleteDialogOpen}
-        setIsDeleteDialogOpen={setIsDeleteDialogOpen}
-        selectedBook={selectedBook}
-      />
-      {/* Borrow Modal */}
-      <BorrowModal
-        bookId={selectedBook?._id || ""}
-        maxQuantity={selectedBook?.copies || 0}
-        onOpenChange={setIsBorrowDialogOpen}
-        open={isBorrowDialogOpen}
-      />
     </>
   );
 };
