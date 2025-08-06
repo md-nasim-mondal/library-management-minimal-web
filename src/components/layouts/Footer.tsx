@@ -3,7 +3,7 @@ const Footer = () => {
     <footer className='py-6 border-t bg-secondary text-secondary-foreground'>
       <div className='container mx-auto px-4 text-center'>
         <p>
-          © {new Date().getFullYear()} Library Management System. All rights
+          © {new Date().getFullYear()} The Bookery. All rights
           reserved.
         </p>
       </div>

@@ -31,7 +31,7 @@ const Main = () => {
     <>
       <div className='flex flex-col min-h-screen'>
         <div
-          className={`shadow-sm w-full sticky top-0 transition-transform duration-300 bg-secondary text-secondary-foreground ${
+          className={`shadow-sm w-full py-2 sticky top-0 transition-transform duration-300 bg-secondary text-secondary-foreground ${
             visible ? "translate-y-0" : "-translate-y-full"
           }`}>
           <Navbar />

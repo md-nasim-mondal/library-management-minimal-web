@@ -1,155 +1,146 @@
-import { useGetBookByIdQuery, useDeleteBookMutation } from "@/redux/api/booksApi";
+import { useGetBookByIdQuery } from "@/redux/api/booksApi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { BookOpenIcon, PenIcon, TrashIcon } from "lucide-react";
-import { Link, useParams, useNavigate } from "react-router";
-import toast from "react-hot-toast";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { Link, useParams } from "react-router";
 import { useState } from "react";
+import BookDeleteAlertDialog from "@/components/modals/BookDeleteAlertDialog";
+import BorrowModal from "@/components/modals/BorrowModal";
 
 const BookDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { data, isLoading } = useGetBookByIdQuery(id || "");
-  const [deleteBook] = useDeleteBookMutation();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isBorrowDialogOpen, setIsBorrowDialogOpen] = useState(false);
 
   const book = data?.data || {};
 
-  const handleDelete = async () => {
-    try {
-      await deleteBook(book._id).unwrap();
-      toast.success("Book deleted successfully");
-      navigate("/books");
-    } catch (error) {
-      toast.error("Failed to delete book");
-    } finally {
-      setIsDeleteDialogOpen(false);
-    }
-  };
-
   if (isLoading) {
     return (
-      <div className="container mx-auto p-4 max-w-4xl">
-        <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-6">
-          <Skeleton className="h-8 w-3/4 mb-4" />
-          <Skeleton className="h-6 w-1/2 mb-8" />
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className='container mx-auto p-4 max-w-4xl'>
+        <div className='bg-card text-card-foreground rounded-lg border shadow-sm p-6'>
+          <Skeleton className='h-8 w-3/4 mb-4' />
+          <Skeleton className='h-6 w-1/2 mb-8' />
+
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-6'>
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="space-y-2">
-                <Skeleton className="h-5 w-1/3" />
-                <Skeleton className="h-4 w-full" />
+              <div key={i} className='space-y-2'>
+                <Skeleton className='h-5 w-1/3' />
+                <Skeleton className='h-4 w-full' />
               </div>
             ))}
           </div>
-          
-          <Skeleton className="h-5 w-1/4 mb-2" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-5/6 mt-2" />
+
+          <Skeleton className='h-5 w-1/4 mb-2' />
+          <Skeleton className='h-4 w-full' />
+          <Skeleton className='h-4 w-5/6 mt-2' />
         </div>
       </div>
     );
   }
 
-  if (!book) return <div className="container mx-auto p-4 max-w-4xl text-center">Book not found</div>;
+  if (!book)
+    return (
+      <div className='container mx-auto p-4 max-w-4xl text-center'>
+        Book not found!
+      </div>
+    );
 
   return (
     <>
-      <div className="container mx-auto p-4 max-w-4xl">
-        <div className="bg-card text-card-foreground rounded-lg border shadow-sm overflow-hidden">
-          <div className="md:flex">
+      <div className='container mx-auto p-4 max-w-4xl'>
+        <div className='bg-card text-card-foreground rounded-lg border shadow-sm overflow-hidden'>
+          <div className='md:flex'>
             {/* Book Cover Image Section */}
-            <div className="md:w-1/3 p-6 bg-muted/50 flex items-center justify-center">
+            <div className='md:w-1/3 p-6 bg-muted/50 flex items-center justify-center'>
               {book.image ? (
                 <img
                   src={book.image}
                   alt={`Cover of ${book.title}`}
-                  className="w-full h-auto max-h-96 object-contain rounded-md border shadow-sm"
+                  className='w-full h-auto max-h-96 object-contain rounded-md border shadow-sm'
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/default-book-cover.jpg';
+                    (e.target as HTMLImageElement).src =
+                      "/default-book-cover.jpg";
                   }}
                 />
               ) : (
-                <div className="w-full h-64 bg-muted flex items-center justify-center text-muted-foreground rounded-md border">
-                  <BookOpenIcon className="h-16 w-16" />
+                <div className='w-full h-64 bg-muted flex items-center justify-center text-muted-foreground rounded-md border'>
+                  <BookOpenIcon className='h-16 w-16' />
                 </div>
               )}
             </div>
 
             {/* Book Details Section */}
-            <div className="md:w-2/3 p-6">
-              <div className="flex justify-between items-start">
+            <div className='md:w-2/3 p-6'>
+              <div className='flex justify-between items-start'>
                 <div>
-                  <h1 className="text-2xl font-bold mb-2">{book.title}</h1>
-                  <h2 className="text-lg text-muted-foreground mb-6">{book.author}</h2>
+                  <h1 className='text-2xl font-bold mb-2'>{book.title}</h1>
+                  <h2 className='text-lg text-muted-foreground mb-6'>
+                    {book.author}
+                  </h2>
                 </div>
-                <Button asChild size="sm" variant="outline">
-                  <Link to={`/edit-book/${book._id}`} className="flex items-center gap-1">
-                    <PenIcon className="h-4 w-4" />
+                <Button asChild size='sm' variant='outline'>
+                  <Link
+                    to={`/edit-book/${book._id}`}
+                    className='flex items-center gap-1'>
+                    <PenIcon className='h-4 w-4' />
                     Edit
                   </Link>
                 </Button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div className="space-y-2">
-                  <div className="font-medium">Genre</div>
-                  <div className="text-muted-foreground">{book.genre}</div>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
+                <div className='space-y-2'>
+                  <div className='font-medium'>Genre</div>
+                  <div className='text-muted-foreground'>{book.genre}</div>
                 </div>
-                <div className="space-y-2">
-                  <div className="font-medium">ISBN</div>
-                  <div className="text-muted-foreground">{book.isbn}</div>
+                <div className='space-y-2'>
+                  <div className='font-medium'>ISBN</div>
+                  <div className='text-muted-foreground'>{book.isbn}</div>
                 </div>
-                <div className="space-y-2">
-                  <div className="font-medium">Publication Year</div>
-                  <div className="text-muted-foreground">
-                    {book.publishedYear || 'N/A'}
+                <div className='space-y-2'>
+                  <div className='font-medium'>Publication Year</div>
+                  <div className='text-muted-foreground'>
+                    {book.publishedYear || "N/A"}
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="font-medium">Availability</div>
-                  <div className="text-muted-foreground">
+                <div className='space-y-2'>
+                  <div className='font-medium'>Availability</div>
+                  <div className='text-muted-foreground'>
                     {book.available ? (
-                      <span className="text-success">Available ({book.copies} copies)</span>
+                      <span className='text-success'>
+                        Available ({book.copies} copies)
+                      </span>
                     ) : (
-                      <span className="text-destructive">Not Available</span>
+                      <span className='text-destructive'>Not Available</span>
                     )}
                   </div>
                 </div>
               </div>
 
               {book.description && (
-                <div className="space-y-2">
-                  <div className="font-medium">Description</div>
-                  <p className="text-muted-foreground whitespace-pre-line">
+                <div className='space-y-2'>
+                  <div className='font-medium'>Description</div>
+                  <p className='text-muted-foreground whitespace-pre-line'>
                     {book.description}
                   </p>
                 </div>
               )}
 
-              <div className="mt-8 flex gap-2">
+              <div className='mt-8 flex gap-2'>
                 <Button asChild>
-                  <Link to={`/borrow/${book._id}`} className="flex items-center gap-1">
-                    <BookOpenIcon className="h-4 w-4" />
+                  <Link
+                    to={`/borrow/${book._id}`}
+                    className='flex items-center gap-1'>
+                    <BookOpenIcon className='h-4 w-4' />
                     Borrow This Book
                   </Link>
                 </Button>
                 <Button
-                  variant="destructive"
+                  variant='destructive'
                   onClick={() => setIsDeleteDialogOpen(true)}
-                  className="flex items-center gap-1"
-                >
-                  <TrashIcon className="h-4 w-4" />
+                  className='flex items-center gap-1'>
+                  <TrashIcon className='h-4 w-4' />
                   Delete Book
                 </Button>
               </div>
@@ -159,26 +150,19 @@ const BookDetails = () => {
       </div>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete "{book.title}" from our
-              database.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <BookDeleteAlertDialog
+        isDeleteDialogOpen={isDeleteDialogOpen}
+        selectedBook={book}
+        setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+      />
+
+      {/* Borrow Modal */}
+      <BorrowModal
+        bookId={book?._id || ""}
+        maxQuantity={book?.copies || 0}
+        onOpenChange={setIsBorrowDialogOpen}
+        open={isBorrowDialogOpen}
+      />
     </>
   );
 };

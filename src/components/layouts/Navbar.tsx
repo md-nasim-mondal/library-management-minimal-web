@@ -3,10 +3,10 @@ import { ModeToggle } from "../ModeToggle";
 
 const Navbar = () => {
   return (
-      <nav className='max-w-7xl mx-auto h-16 flex justify-between items-center gap-3 px-5'>
+      <nav className='max-w-7xl mx-auto h-16 flex justify-between items-center gap-3 px-6'>
         <div className='flex items-center'>
-          <Link to='/' className='font-bold ml-2'>
-            Library Management
+          <Link to='/' className='font-bold ml-2 text-2xl'>
+            <span>📚</span>The Bookery
           </Link>
         </div>
         <div className='space-x-5'>
