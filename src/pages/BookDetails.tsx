@@ -46,6 +46,15 @@ const BookDetails = () => {
       </div>
     );
 
+  const handleDeleteModal = () => {
+    setIsBorrowDialogOpen(false);
+    setIsDeleteDialogOpen(true);
+  };
+  const handleBorrowModal = () => {
+    setIsDeleteDialogOpen(false);
+    setIsBorrowDialogOpen(true);
+  };
+
   return (
     <>
       <div className='container mx-auto p-4 max-w-4xl'>
@@ -55,7 +64,7 @@ const BookDetails = () => {
             <div className='md:w-1/3 p-6 bg-muted/50 flex items-center justify-center'>
               {book.image ? (
                 <img
-                  src={book.image}
+                  src={book?.image}
                   alt={`Cover of ${book.title}`}
                   className='w-full h-auto max-h-96 object-contain rounded-md border shadow-sm'
                   onError={(e) => {
@@ -128,17 +137,15 @@ const BookDetails = () => {
               )}
 
               <div className='mt-8 flex gap-2'>
-                <Button asChild>
-                  <Link
-                    to={`/borrow/${book._id}`}
-                    className='flex items-center gap-1'>
+                <Button onClick={() => handleBorrowModal()} asChild>
+                  <span className='flex items-center gap-1'>
                     <BookOpenIcon className='h-4 w-4' />
                     Borrow This Book
-                  </Link>
+                  </span>
                 </Button>
                 <Button
                   variant='destructive'
-                  onClick={() => setIsDeleteDialogOpen(true)}
+                  onClick={() => handleDeleteModal()}
                   className='flex items-center gap-1'>
                   <TrashIcon className='h-4 w-4' />
                   Delete Book

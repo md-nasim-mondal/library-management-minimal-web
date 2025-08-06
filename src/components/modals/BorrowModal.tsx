@@ -55,7 +55,6 @@ const BorrowModal = ({
 
   const onSubmit = async (data: BorrowFormData) => {
     try {
-      console.log(data.quantity);
       await borrowBook({
         book: bookId,
         quantity: data.quantity,

@@ -4,13 +4,26 @@ import { baseApi } from "./baseApi";
 export const borrowsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     borrowBook: builder.mutation<IBorrow, IBorrowBookRequest>({
-      query: (body) => ({
+    query: (body) => {
+      // Explicitly convert quantity to number
+      const numericQuantity = Number(body.quantity);
+      
+      // Validate the conversion
+      if (isNaN(numericQuantity)) {
+        throw new Error('Quantity must be a valid number');
+      }
+
+      return {
         url: `/borrow`,
         method: "POST",
-        body,
-      }),
-      invalidatesTags: ["Book", "Borrow"],
-    }),
+        body: {
+          ...body,
+          quantity: numericQuantity
+        },
+      };
+    },
+    invalidatesTags: ["Book", "Borrow"],
+  }),
     returnBook: builder.mutation({
       query: (id) => ({
         url: `/borrow/${id}/return`,
