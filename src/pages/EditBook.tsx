@@ -44,7 +44,7 @@ const EditBook = () => {
       description: "",
       copies: 1,
       available: true,
-      publishedYear: new Date().getFullYear(),
+      publishedYear: null,
       image: "",
     },
   });
