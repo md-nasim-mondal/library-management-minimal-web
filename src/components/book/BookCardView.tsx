@@ -1,8 +1,8 @@
 import type { IBook } from "@/types";
 import { useState } from "react";
-import BookDeleteAlertDialog from "./modals/BookDeleteAlertDialog";
+import BookDeleteAlertDialog from "../modals/BookDeleteAlertDialog";
 import BookCard from "./BookCard";
-import BorrowModal from "./modals/BorrowModal";
+import BorrowModal from "../modals/BorrowModal";
 
 interface IBookCardProps {
   books: IBook[];

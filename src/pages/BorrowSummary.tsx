@@ -12,7 +12,7 @@ import { BookOpenIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "react-hot-toast";
 import type { IBorrowSummary } from "@/types";
-import BorrowSummaryTable from "@/components/BorrowSummaryTable";
+import BorrowSummaryTable from "@/components/book/borrow/BorrowSummaryTable";
 
 const BorrowSummary = () => {
   const { data, isLoading, isError, refetch } =

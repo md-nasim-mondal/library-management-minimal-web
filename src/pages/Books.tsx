@@ -1,5 +1,5 @@
 import { useGetBooksQuery } from "@/redux/api/booksApi";
-import BookCardView from "@/components/BookCardView";
+import BookCardView from "@/components/book/BookCardView";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { BookCopy } from "lucide-react";

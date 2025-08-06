@@ -5,8 +5,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import { Button } from "./ui/button";
+} from "../../ui/table";
+import { Button } from "../../ui/button";
 import { Link } from "react-router";
 import { BookOpenIcon } from "lucide-react";
 import type { IBorrowSummary } from "@/types";
