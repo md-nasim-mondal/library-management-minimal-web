@@ -1,15 +1,5 @@
-import type { IBook } from "@/types";
+import type { IBooksResponse } from "@/types";
 import { baseApi } from "./baseApi";
-
-interface IBooksResponse {
-  data: IBook[];
-  meta: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-}
 
 export const booksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -67,7 +57,7 @@ export const booksApi = baseApi.injectEndpoints({
         url: `/books/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Book"],
+      invalidatesTags: ["Book", "Borrow"],
     }),
   }),
 });

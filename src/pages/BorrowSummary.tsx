@@ -32,10 +32,8 @@ const BorrowSummary = () => {
     limit,
   });
 
-  
   const borrowsData: IBorrowSummary[] = data?.data || [];
   const meta = data?.meta || { total: 0, totalPages: 1 };
-  console.log(borrowsData);
 
   const handlePreviousPage = () => page > 1 && setPage(page - 1);
   const handleNextPage = () => page < meta.totalPages && setPage(page + 1);
@@ -126,36 +124,8 @@ const BorrowSummary = () => {
           </div>
         ) : (
           <>
-            {/* <div className='rounded-md border'>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>ISBN</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead className='text-right'>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {borrowsData.map((item) => (
-                    <TableRow key={item.book.bookId}>
-                      <TableCell className='font-medium'>
-                        {item.book.title}
-                      </TableCell>
-                      <TableCell>{item.book.isbn}</TableCell>
-                      <TableCell>{item.totalQuantity}</TableCell>
-                      <TableCell className='text-right'>
-                        <Button variant='outline' size='sm' asChild>
-                          <a href={`/books/${item.book.bookId}`}>View Book</a>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div> */}
-            <BorrowSummaryTable BorrowsData={borrowsData}/>
-
+            {/* Borrow Summary Table */}
+            <BorrowSummaryTable BorrowsData={borrowsData} />
             {/* Pagination Controls */}
             <div className='flex items-center justify-between mt-6'>
               <div className='text-sm text-muted-foreground'>

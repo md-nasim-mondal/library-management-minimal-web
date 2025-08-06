@@ -1,16 +1,16 @@
-import type { IBook } from "@/types";
+import type { IBook, IBookCardViewProps } from "@/types";
 import { useState } from "react";
 import BookDeleteAlertDialog from "../modals/BookDeleteAlertDialog";
 import BookCard from "./BookCard";
 import BorrowModal from "../modals/BorrowModal";
 
-interface IBookCardProps {
-  books: IBook[];
-  showDescription?: boolean;
-}
-
-const BookCardView = ({ books, showDescription = false }: IBookCardProps) => {
-  const [selectedBook, setSelectedBook] = useState<IBook | undefined>(undefined);
+const BookCardView = ({
+  books,
+  showDescription = false,
+}: IBookCardViewProps) => {
+  const [selectedBook, setSelectedBook] = useState<IBook | undefined>(
+    undefined
+  );
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isBorrowDialogOpen, setIsBorrowDialogOpen] = useState(false);
 

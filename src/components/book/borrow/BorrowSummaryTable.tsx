@@ -9,11 +9,8 @@ import {
 import { Button } from "../../ui/button";
 import { Link } from "react-router";
 import { BookOpenIcon } from "lucide-react";
-import type { IBorrowSummary } from "@/types";
+import type { IBorrowSummary, IBorrowSummaryTableProps } from "@/types";
 
-interface IBorrowSummaryTableProps {
-  BorrowsData: IBorrowSummary[];
-}
 
 const BorrowSummaryTable = ({ BorrowsData }: IBorrowSummaryTableProps) => {
   return (

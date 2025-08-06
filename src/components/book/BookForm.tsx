@@ -10,13 +10,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { IBook } from "@/types";
+import type { IBook, IBookFormProps } from "@/types";
 
-interface IBookFormProps {
-  defaultValues?: IBook;
-  onSubmit: (data: Omit<IBook, "id">) => void;
-  isLoading: boolean;
-}
 
 const BookForm = ({ defaultValues, onSubmit, isLoading }: IBookFormProps) => {
   const form = useForm<Omit<IBook, "id">>({

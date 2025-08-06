@@ -11,14 +11,7 @@ import {
 } from "../ui/alert-dialog";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
-import type { IBook } from "@/types";
-
-interface IBookDeleteAlertDialogProps {
-  isDeleteDialogOpen: boolean;
-  setIsDeleteDialogOpen: (isDeleteDialogOpen: boolean) => void;
-  selectedBook: IBook | undefined;
-}
-
+import type { IBookDeleteAlertDialogProps } from "@/types";
 const BookDeleteAlertDialog = ({
   isDeleteDialogOpen,
   setIsDeleteDialogOpen,

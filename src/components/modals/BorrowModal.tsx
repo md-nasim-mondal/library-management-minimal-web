@@ -22,19 +22,9 @@ import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router";
+import type { IBorrowFormData, IBorrowModalProps } from "@/types";
 
-interface IBorrowModalProps {
-  bookId: string;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  maxQuantity: number;
-}
-
-interface IBorrowFormData {
-  book: string;
-  quantity: number;
-  dueDate: Date;
-}
 
 const BorrowModal = ({
   bookId,
@@ -44,6 +34,7 @@ const BorrowModal = ({
 }: IBorrowModalProps) => {
   const { data: book } = useGetBookByIdQuery(bookId);
   const [borrowBook, { isLoading }] = useBorrowBookMutation();
+  const navigate = useNavigate();
 
   const form = useForm<IBorrowFormData>({
     defaultValues: {
@@ -61,14 +52,13 @@ const BorrowModal = ({
         dueDate: data.dueDate.toISOString(),
       }).unwrap();
 
-
       toast.success(
         `Successfully borrowed ${data.quantity} copy(ies) of ${book?.data.title}`
       );
       onOpenChange(false);
+      navigate("/borrow-summary");
     } catch (error) {
       toast.error("Failed to borrow book");
-      console.log(error);
     }
   };
 

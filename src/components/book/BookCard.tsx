@@ -1,4 +1,4 @@
-import type { IBook } from "@/types";
+import type { IBookCardProps } from "@/types";
 import {
   Card,
   CardContent,
@@ -10,14 +10,6 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Link } from "react-router";
 import { BookOpenIcon, InfoIcon, PenIcon, TrashIcon } from "lucide-react";
-
-interface IBookCardProps {
-  book: IBook;
-  setIsDeleteDialogOpen: (isDeleteDialogOpen: boolean) => void;
-  setIsBorrowDialogOpen: (isBorrowDialogOpen: boolean) => void;
-  setSelectedBook: (book: IBook) => void;
-  showDescription?: boolean;
-}
 
 const BookCard = ({
   book,
