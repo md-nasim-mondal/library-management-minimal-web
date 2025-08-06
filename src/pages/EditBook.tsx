@@ -27,6 +27,21 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 
+type ApiError = {
+  data?: {
+    message?: string;
+    error?: {
+      name: string;
+      errors: Record<string, {
+        message: string;
+        [key: string]: unknown;
+      }>;
+    };
+  };
+};
+
+type ValidationErrors = Record<string, { message: string }>;
+
 const EditBook = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -50,6 +65,27 @@ const EditBook = () => {
     },
   });
 
+  const handleApiError = (error: ApiError) => {
+    if (error?.data?.error?.name === "ValidationError") {
+      const validationErrors = error.data.error.errors as ValidationErrors;
+      
+      Object.entries(validationErrors).forEach(([field, error]) => {
+        form.setError(field as keyof IBook, {
+          type: "manual",
+          message: error.message,
+        });
+      });
+
+      const errorMessages = Object.values(validationErrors)
+        .map(err => err.message)
+        .join("\n");
+      
+      toast.error(`Validation failed:\n${errorMessages}`);
+    } else {
+      toast.error(error.data?.message || "Failed to update book");
+    }
+  };
+
   const onSubmit = async (values: IBook) => {
     try {
       const { updatedAt, createdAt, ...rest } = values;
@@ -57,7 +93,7 @@ const EditBook = () => {
       toast.success("Book updated successfully");
       navigate(`/books/${values._id}`);
     } catch (error) {
-      toast.error("Failed to update book");
+      handleApiError(error as ApiError);
     }
   };
 
@@ -139,12 +175,11 @@ const EditBook = () => {
                     <FormLabel>Genre</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}>
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger className='w-full'>
-                          <SelectValue
-                            placeholder={field.value || "Select a genre to set"}
-                          />
+                          <SelectValue placeholder={field.value || "Select a genre to set"} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className='w-full'>
@@ -188,7 +223,11 @@ const EditBook = () => {
                         {...field}
                         value={field.value ?? ""}
                         onChange={(e) =>
-                          field.onChange(parseInt(e.target.value))
+                          field.onChange(
+                            e.target.value === ""
+                              ? undefined
+                              : parseInt(e.target.value)
+                          )
                         }
                       />
                     </FormControl>
@@ -208,9 +247,10 @@ const EditBook = () => {
                         type='number'
                         min='0'
                         {...field}
-                        onChange={(e) =>
-                          field.onChange(parseInt(e.target.value))
-                        }
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value);
+                          field.onChange(isNaN(value) ? "" : value);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -279,7 +319,8 @@ const EditBook = () => {
                   } else {
                     navigate(`/books/${book._id}`);
                   }
-                }}>
+                }}
+              >
                 Cancel
               </Button>
               <Button type='submit' disabled={isLoading}>

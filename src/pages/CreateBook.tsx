@@ -22,6 +22,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type ApiError = {
+  data?: {
+    message?: string;
+    error?: {
+      name: string;
+      errors: Record<string, {
+        message: string;
+        [key: string]: unknown;
+      }>;
+    };
+  };
+};
+
+type ValidationErrors = Record<string, { message: string }>;
+
 const CreateBook = () => {
   const [addBook, { isLoading }] = useAddBookMutation();
   const navigate = useNavigate();
@@ -40,14 +55,34 @@ const CreateBook = () => {
     },
   });
 
+  const handleApiError = (error: ApiError) => {
+    if (error?.data?.error?.name === "ValidationError") {
+      const validationErrors = error.data.error.errors as ValidationErrors;
+      
+      Object.entries(validationErrors).forEach(([field, error]) => {
+        form.setError(field as keyof Omit<IBook, "_id">, {
+          type: "manual",
+          message: error.message,
+        });
+      });
+
+      const errorMessages = Object.values(validationErrors)
+        .map(err => err.message)
+        .join("\n");
+      
+      toast.error(`Validation failed:\n${errorMessages}`);
+    } else {
+      toast.error(error.data?.message || "Failed to add book");
+    }
+  };
+
   const onSubmit = async (values: Omit<IBook, "_id">) => {
     try {
       await addBook(values).unwrap();
       toast.success("Book added successfully");
       navigate("/books");
     } catch (error) {
-      toast.error("Failed to add book");
-      console.log(error);
+      handleApiError(error as ApiError);
     }
   };
 
@@ -95,7 +130,8 @@ const CreateBook = () => {
                     <FormLabel>Genre</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}>
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger className='w-full'>
                           <SelectValue placeholder='Select a genre to set' />
@@ -166,9 +202,10 @@ const CreateBook = () => {
                         type='number'
                         min='1'
                         {...field}
-                        onChange={(e) =>
-                          field.onChange(parseInt(e.target.value))
-                        }
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value);
+                          field.onChange(isNaN(value) ? "" : value);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -213,7 +250,8 @@ const CreateBook = () => {
               <Button
                 type='button'
                 variant='outline'
-                onClick={() => navigate("/books")}>
+                onClick={() => navigate("/books")}
+              >
                 Cancel
               </Button>
               <Button type='submit' disabled={isLoading}>
