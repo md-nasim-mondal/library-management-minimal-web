@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const EditBook = () => {
   const { id } = useParams();
@@ -52,13 +53,11 @@ const EditBook = () => {
   const onSubmit = async (values: IBook) => {
     try {
       const { updatedAt, createdAt, ...rest } = values;
-      console.log(rest);
       await updateBook(rest).unwrap();
       toast.success("Book updated successfully");
       navigate(`/books/${values._id}`);
     } catch (error) {
       toast.error("Failed to update book");
-      console.log(error);
     }
   };
 
@@ -232,6 +231,24 @@ const EditBook = () => {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name='available'
+                render={({ field }) => (
+                  <FormItem className='flex flex-row items-center gap-3 pt-6 pl-4'>
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className='leading-none'>
+                      <FormLabel>Available for borrowing</FormLabel>
+                    </div>
+                  </FormItem>
+                )}
+              />
             </div>
 
             <FormField
@@ -253,18 +270,18 @@ const EditBook = () => {
             />
 
             <div className='flex justify-end gap-2'>
-                <Button
+              <Button
                 type='button'
                 variant='outline'
                 onClick={() => {
                   if (window.history.length > 2) {
-                  navigate(-1);
+                    navigate(-1);
                   } else {
-                  navigate(`/books/${book._id}`);
+                    navigate(`/books/${book._id}`);
                   }
                 }}>
                 Cancel
-                </Button>
+              </Button>
               <Button type='submit' disabled={isLoading}>
                 {isLoading ? "Saving..." : "Save Changes"}
               </Button>
