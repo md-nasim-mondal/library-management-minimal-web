@@ -3,39 +3,27 @@ import {
   useUpdateBookMutation,
 } from "@/redux/api/booksApi";
 import { useNavigate, useParams } from "react-router";
-import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+
 import { toast } from "react-hot-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { IBook } from "@/types";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+
+import { useTheme } from "@/hooks/useTheme";
+import EditBookForm from "@/components/book/EditBookForm";
+import { useForm } from "react-hook-form";
 
 type ApiError = {
   data?: {
     message?: string;
     error?: {
       name: string;
-      errors: Record<string, {
-        message: string;
-        [key: string]: unknown;
-      }>;
+      errors: Record<
+        string,
+        {
+          message: string;
+          [key: string]: unknown;
+        }
+      >;
     };
   };
 };
@@ -45,30 +33,33 @@ type ValidationErrors = Record<string, { message: string }>;
 const EditBook = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const { data, isLoading: isBookLoading } = useGetBookByIdQuery(id || "");
   const [updateBook, { isLoading }] = useUpdateBookMutation();
 
   const book = data?.data;
 
+  const defaultValues = book || {
+    _id: "",
+    title: "",
+    author: "",
+    genre: "",
+    isbn: "",
+    description: "",
+    copies: 1,
+    available: true,
+    publishedYear: undefined,
+    image: "",
+  };
+
   const form = useForm<IBook>({
-    values: book || {
-      _id: "",
-      title: "",
-      author: "",
-      genre: "",
-      isbn: "",
-      description: "",
-      copies: 1,
-      available: true,
-      publishedYear: undefined,
-      image: "",
-    },
+    values: defaultValues,
   });
 
   const handleApiError = (error: ApiError) => {
     if (error?.data?.error?.name === "ValidationError") {
       const validationErrors = error.data.error.errors as ValidationErrors;
-      
+
       Object.entries(validationErrors).forEach(([field, error]) => {
         form.setError(field as keyof IBook, {
           type: "manual",
@@ -77,12 +68,22 @@ const EditBook = () => {
       });
 
       const errorMessages = Object.values(validationErrors)
-        .map(err => err.message)
+        .map((err) => err.message)
         .join("\n");
-      
-      toast.error(`Validation failed:\n${errorMessages}`);
+
+      toast.error(`Validation failed:\n${errorMessages}`, {
+        style: {
+          background: theme === "dark" ? "#020817" : "#fff",
+          color: theme === "dark" ? "#fff" : "#000",
+        },
+      });
     } else {
-      toast.error(error.data?.message || "Failed to update book");
+      toast.error(error.data?.message || "Failed to update book", {
+        style: {
+          background: theme === "dark" ? "#020817" : "#fff",
+          color: theme === "dark" ? "#fff" : "#000",
+        },
+      });
     }
   };
 
@@ -90,7 +91,12 @@ const EditBook = () => {
     try {
       const { updatedAt, createdAt, ...rest } = values;
       await updateBook(rest).unwrap();
-      toast.success("Book updated successfully");
+      toast.success("Book updated successfully", {
+        style: {
+          background: theme === "dark" ? "#020817" : "#fff",
+          color: theme === "dark" ? "#fff" : "#000",
+        },
+      });
       navigate(`/books/${values._id}`);
     } catch (error) {
       handleApiError(error as ApiError);
@@ -99,8 +105,16 @@ const EditBook = () => {
 
   if (isBookLoading) {
     return (
-      <div className='container mx-auto p-4 max-w-4xl'>
-        <div className='bg-card text-card-foreground rounded-lg border shadow-sm p-6'>
+      <div
+        className={`container mx-auto p-4 max-w-4xl ${
+          theme === "dark" ? "bg-gray-900" : "bg-white"
+        }`}>
+        <div
+          className={`rounded-lg border shadow-sm p-6 ${
+            theme === "dark"
+              ? "bg-gray-800 border-gray-700"
+              : "bg-white border-gray-200"
+          }`}>
           <Skeleton className='h-8 w-1/3 mb-6' />
           <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
             {[...Array(6)].map((_, i) => (
@@ -125,210 +139,34 @@ const EditBook = () => {
 
   if (!book) {
     return (
-      <div className='container mx-auto p-4 max-w-4xl text-center'>
+      <div
+        className={`container mx-auto p-4 max-w-4xl text-center ${
+          theme === "dark"
+            ? "bg-gray-900 text-gray-100"
+            : "bg-white text-gray-900"
+        }`}>
         Book not found
       </div>
     );
   }
 
   return (
-    <div className='container mx-auto p-4 max-w-4xl'>
-      <div className='bg-card text-card-foreground rounded-lg border shadow-sm p-6'>
+    <div
+      className={`container mx-auto p-4 max-w-4xl ${
+        theme === "dark" ? "bg-gray-900" : "bg-white"
+      }`}>
+      <div
+        className={`rounded-lg border shadow-sm p-6 ${
+          theme === "dark"
+            ? "bg-gray-800 border-gray-700 text-gray-100"
+            : "bg-white border-gray-200 text-gray-900"
+        }`}>
         <h1 className='text-2xl font-bold mb-6'>Edit Book</h1>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-              <FormField
-                control={form.control}
-                name='title'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title*</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Book title' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='author'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Author*</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Author name' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='genre'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Genre</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className='w-full'>
-                          <SelectValue placeholder={field.value || "Select a genre to set"} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className='w-full'>
-                        <SelectItem value='FICTION'>FICTION</SelectItem>
-                        <SelectItem value='NON_FICTION'>NON_FICTION</SelectItem>
-                        <SelectItem value='SCIENCE'>SCIENCE</SelectItem>
-                        <SelectItem value='HISTORY'>HISTORY</SelectItem>
-                        <SelectItem value='BIOGRAPHY'>BIOGRAPHY</SelectItem>
-                        <SelectItem value='FANTASY'>FANTASY</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='isbn'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>ISBN*</FormLabel>
-                    <FormControl>
-                      <Input placeholder='ISBN number' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='publishedYear'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Publication Year</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='number'
-                        min='1600'
-                        max={new Date().getFullYear()}
-                        {...field}
-                        value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === ""
-                              ? undefined
-                              : parseInt(e.target.value)
-                          )
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='copies'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Copies*</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='number'
-                        min='0'
-                        {...field}
-                        onChange={(e) => {
-                          const value = parseInt(e.target.value);
-                          field.onChange(isNaN(value) ? "" : value);
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='image'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cover Image URL</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Image URL' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='available'
-                render={({ field }) => (
-                  <FormItem className='flex flex-row items-center gap-3 pt-6 pl-4'>
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className='leading-none'>
-                      <FormLabel>Available for borrowing</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name='description'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description*</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder='Book description'
-                      className='min-h-[120px]'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className='flex justify-end gap-2'>
-              <Button
-                type='button'
-                variant='outline'
-                onClick={() => {
-                  if (window.history.length > 2) {
-                    navigate(-1);
-                  } else {
-                    navigate(`/books/${book._id}`);
-                  }
-                }}
-              >
-                Cancel
-              </Button>
-              <Button type='submit' disabled={isLoading}>
-                {isLoading ? "Saving..." : "Save Changes"}
-              </Button>
-            </div>
-          </form>
-        </Form>
+        <EditBookForm
+          isLoading={isLoading}
+          onSubmit={onSubmit}
+          form={form}
+        />
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ import { toast } from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router";
 import type { IBorrowFormData, IBorrowModalProps } from "@/types";
-
+import { useTheme } from "@/hooks/useTheme";
 
 const BorrowModal = ({
   bookId,
@@ -32,6 +32,7 @@ const BorrowModal = ({
   onOpenChange,
   maxQuantity,
 }: IBorrowModalProps) => {
+  const { theme } = useTheme();
   const { data: book } = useGetBookByIdQuery(bookId);
   const [borrowBook, { isLoading }] = useBorrowBookMutation();
   const navigate = useNavigate();
@@ -64,11 +65,17 @@ const BorrowModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent
+        className={`sm:max-w-[425px] ${
+          theme === "dark" ? "bg-gray-800 border-gray-700" : ""
+        }`}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Borrow {book?.data.title}</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className={theme === "dark" ? "text-gray-100" : ""}>
+              Borrow {book?.data.title}
+            </DialogTitle>
+            <DialogDescription
+              className={theme === "dark" ? "text-gray-300" : ""}>
               Please fill in the details for borrowing this book.
             </DialogDescription>
           </DialogHeader>

@@ -1,3 +1,5 @@
+import type { UseFormReturn } from "react-hook-form";
+
 export interface IBook {
   _id?: string;
   title: string;
@@ -49,7 +51,7 @@ export interface IBookCardViewProps {
 }
 
 export interface IBookFormProps {
-  defaultValues?: IBook;
+  form: UseFormReturn<IBook>;
   onSubmit: (data: Omit<IBook, "id">) => void;
   isLoading: boolean;
 }

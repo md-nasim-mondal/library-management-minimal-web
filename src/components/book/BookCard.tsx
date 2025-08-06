@@ -14,14 +14,18 @@ import BorrowModal from "../modals/BorrowModal";
 import BookDeleteAlertDialog from "../modals/BookDeleteAlertDialog";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useTheme } from "@/hooks/useTheme";
 
 const BookCard = ({ book, showDescription }: IBookCardProps) => {
+  const { theme } = useTheme();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isBorrowDialogOpen, setIsBorrowDialogOpen] = useState(false);
+
   const handleDeleteModal = () => {
     setIsBorrowDialogOpen(false);
     setIsDeleteDialogOpen(true);
   };
+
   const handleBorrowModal = () => {
     if (book.copies === 0 || !book.available) {
       return toast.error(
@@ -31,18 +35,21 @@ const BookCard = ({ book, showDescription }: IBookCardProps) => {
     setIsDeleteDialogOpen(false);
     setIsBorrowDialogOpen(true);
   };
+
   return (
     <>
-      <Card
-        key={book._id}
-        className='flex flex-col h-full hover:shadow-lg transition-shadow'>
+      <Card className={`flex flex-col h-full hover:shadow-lg transition-shadow ${
+        theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white"
+      }`}>
         <CardHeader>
-          <CardTitle className='text-lg truncate' title={book.title}>
+          <CardTitle className={`text-lg truncate ${
+            theme === "dark" ? "text-gray-100" : "text-gray-900"
+          }`}>
             {book.title}
           </CardTitle>
-          <div
-            className='text-sm text-muted-foreground truncate'
-            title={book.author}>
+          <div className={`text-sm truncate ${
+            theme === "dark" ? "text-gray-400" : "text-gray-600"
+          }`}>
             {book.author}
           </div>
         </CardHeader>
@@ -114,13 +121,13 @@ const BookCard = ({ book, showDescription }: IBookCardProps) => {
           </div>
         </CardFooter>
       </Card>
-      {/* Delete Confirmation Dialog */}
+      
       <BookDeleteAlertDialog
         isDeleteDialogOpen={isDeleteDialogOpen}
         setIsDeleteDialogOpen={setIsDeleteDialogOpen}
         book={book}
       />
-      {/* Borrow Modal */}
+      
       <BorrowModal
         bookId={book?._id || ""}
         maxQuantity={book?.copies || 0}

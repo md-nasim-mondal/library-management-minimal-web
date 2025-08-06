@@ -21,16 +21,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTheme } from "@/hooks/useTheme";
 
 type ApiError = {
   data?: {
     message?: string;
     error?: {
       name: string;
-      errors: Record<string, {
-        message: string;
-        [key: string]: unknown;
-      }>;
+      errors: Record<
+        string,
+        {
+          message: string;
+          [key: string]: unknown;
+        }
+      >;
     };
   };
 };
@@ -40,6 +44,7 @@ type ValidationErrors = Record<string, { message: string }>;
 const CreateBook = () => {
   const [addBook, { isLoading }] = useAddBookMutation();
   const navigate = useNavigate();
+  const { theme } = useTheme();
 
   const form = useForm<Omit<IBook, "_id">>({
     defaultValues: {
@@ -58,7 +63,7 @@ const CreateBook = () => {
   const handleApiError = (error: ApiError) => {
     if (error?.data?.error?.name === "ValidationError") {
       const validationErrors = error.data.error.errors as ValidationErrors;
-      
+
       Object.entries(validationErrors).forEach(([field, error]) => {
         form.setError(field as keyof Omit<IBook, "_id">, {
           type: "manual",
@@ -67,9 +72,9 @@ const CreateBook = () => {
       });
 
       const errorMessages = Object.values(validationErrors)
-        .map(err => err.message)
+        .map((err) => err.message)
         .join("\n");
-      
+
       toast.error(`Validation failed:\n${errorMessages}`);
     } else {
       toast.error(error.data?.message || "Failed to add book");
@@ -87,8 +92,16 @@ const CreateBook = () => {
   };
 
   return (
-    <div className='container mx-auto p-4 max-w-4xl'>
-      <div className='bg-card text-card-foreground rounded-lg border shadow-sm p-6'>
+    <div
+      className={`container mx-auto p-4 max-w-4xl ${
+        theme === "dark" ? "bg-gray-900" : "bg-white"
+      }`}>
+      <div
+        className={`rounded-lg border shadow-sm p-6 ${
+          theme === "dark"
+            ? "bg-gray-800 border-gray-700 text-gray-100"
+            : "bg-white border-gray-200 text-gray-900"
+        }`}>
         <h1 className='text-2xl font-bold mb-6'>Add New Book</h1>
 
         <Form {...form}>
@@ -101,7 +114,13 @@ const CreateBook = () => {
                   <FormItem>
                     <FormLabel>Title*</FormLabel>
                     <FormControl>
-                      <Input placeholder='Book title' {...field} />
+                      <Input
+                        placeholder='Book title'
+                        {...field}
+                        className={
+                          theme === "dark" ? "bg-gray-700 border-gray-600" : ""
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -115,7 +134,13 @@ const CreateBook = () => {
                   <FormItem>
                     <FormLabel>Author*</FormLabel>
                     <FormControl>
-                      <Input placeholder='Author name' {...field} />
+                      <Input
+                        placeholder='Author name'
+                        {...field}
+                        className={
+                          theme === "dark" ? "bg-gray-700 border-gray-600" : ""
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -130,14 +155,21 @@ const CreateBook = () => {
                     <FormLabel>Genre</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                      defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className='w-full'>
+                        <SelectTrigger
+                          className={`w-full ${
+                            theme === "dark"
+                              ? "bg-gray-700 border-gray-600"
+                              : ""
+                          }`}>
                           <SelectValue placeholder='Select a genre to set' />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className='w-full'>
+                      <SelectContent
+                        className={
+                          theme === "dark" ? "bg-gray-800 border-gray-700" : ""
+                        }>
                         <SelectItem value='FICTION'>FICTION</SelectItem>
                         <SelectItem value='NON_FICTION'>NON_FICTION</SelectItem>
                         <SelectItem value='SCIENCE'>SCIENCE</SelectItem>
@@ -157,7 +189,13 @@ const CreateBook = () => {
                   <FormItem>
                     <FormLabel>ISBN*</FormLabel>
                     <FormControl>
-                      <Input placeholder='ISBN number' {...field} />
+                      <Input
+                        placeholder='ISBN number'
+                        {...field}
+                        className={
+                          theme === "dark" ? "bg-gray-700 border-gray-600" : ""
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -184,6 +222,9 @@ const CreateBook = () => {
                               : parseInt(e.target.value)
                           )
                         }
+                        className={
+                          theme === "dark" ? "bg-gray-700 border-gray-600" : ""
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -206,6 +247,9 @@ const CreateBook = () => {
                           const value = parseInt(e.target.value);
                           field.onChange(isNaN(value) ? "" : value);
                         }}
+                        className={
+                          theme === "dark" ? "bg-gray-700 border-gray-600" : ""
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -220,7 +264,13 @@ const CreateBook = () => {
                   <FormItem>
                     <FormLabel>Cover Image URL</FormLabel>
                     <FormControl>
-                      <Input placeholder='Image URL' {...field} />
+                      <Input
+                        placeholder='Image URL'
+                        {...field}
+                        className={
+                          theme === "dark" ? "bg-gray-700 border-gray-600" : ""
+                        }
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -237,7 +287,9 @@ const CreateBook = () => {
                   <FormControl>
                     <Textarea
                       placeholder='Book description'
-                      className='min-h-[120px]'
+                      className={`min-h-[120px] ${
+                        theme === "dark" ? "bg-gray-700 border-gray-600" : ""
+                      }`}
                       {...field}
                     />
                   </FormControl>
@@ -251,7 +303,7 @@ const CreateBook = () => {
                 type='button'
                 variant='outline'
                 onClick={() => navigate("/books")}
-              >
+                className={theme === "dark" ? "border-gray-600" : ""}>
                 Cancel
               </Button>
               <Button type='submit' disabled={isLoading}>

@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { useTheme } from "@/hooks/useTheme";
 
 const Books = () => {
   const [page, setPage] = useState(1);
@@ -20,6 +21,7 @@ const Books = () => {
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
+  const { theme } = useTheme();
 
   const { data, isLoading, isError } = useGetBooksQuery({
     page,
@@ -37,7 +39,9 @@ const Books = () => {
 
   if (isError) {
     return (
-      <div className='flex items-center justify-center h-64'>
+      <div className={`flex items-center justify-center h-64 ${
+        theme === "dark" ? "bg-gray-900" : "bg-white"
+      }`}>
         <div className='text-center'>
           <h2 className='text-xl font-semibold'>Error loading books</h2>
           <Button
@@ -52,16 +56,22 @@ const Books = () => {
   }
 
   return (
-    <div className='space-y-6'>
-      <div className='flex gap-4 items-center justify-center'>
+    <div className={`space-y-6 ${theme === "dark" ? "" : "bg-white"}`}>
+      <div className='flex gap-4 items-center justify-center pt-8'>
         <BookCopy className='h-10 w-10' strokeWidth={1.5} />
-        <h1 className='text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold'>
+        <h1 className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold ${
+          theme === "dark" ? "text-gray-100" : "text-gray-900"
+        }`}>
           Our Book Collection
         </h1>
       </div>
 
       {/* Filter and Sort Controls */}
-      <div className='flex flex-wrap gap-4 items-center justify-center p-4 bg-muted/50 rounded-lg mx-4'>
+      <div className={`flex flex-wrap gap-4 items-center justify-center p-4 rounded-lg mx-4 ${
+        theme === "dark" 
+          ? "bg-gray-800 border-gray-700" 
+          : "bg-gray-50 border-gray-200"
+      }`}>
         {/* Genre Filter */}
         <div className='flex items-center gap-2'>
           <Label>Genre:</Label>
@@ -153,7 +163,7 @@ const Books = () => {
       {isLoading ? (
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4'>
           {Array.from({ length: limit }).map((_, i) => (
-            <Card key={i}>
+            <Card key={i} className={theme === "dark" ? "bg-gray-800" : ""}>
               <CardHeader>
                 <Skeleton className='h-6 w-3/4' />
                 <Skeleton className='h-4 w-1/2 mt-2' />
@@ -168,7 +178,7 @@ const Books = () => {
       ) : (
         <>
           <BookCardView books={books} />
-          <div className='flex items-center justify-center gap-4 mt-8'>
+          <div className='flex items-center justify-center gap-4 mt-8 pb-8'>
             <Button
               variant='outline'
               size='icon'
@@ -176,7 +186,7 @@ const Books = () => {
               disabled={page === 1}>
               <ChevronLeft className='h-4 w-4' />
             </Button>
-            <span>
+            <span className={theme === "dark" ? "text-gray-300" : "text-gray-600"}>
               Page {page} of {meta.totalPages}
             </span>
             <Button

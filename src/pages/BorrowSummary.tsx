@@ -22,8 +22,10 @@ import {
 import { Label } from "@/components/ui/label";
 import type { IBorrowSummary } from "@/types";
 import BorrowSummaryTable from "@/components/book/borrow/BorrowSummaryTable";
+import { useTheme } from "@/hooks/useTheme";
 
 const BorrowSummary = () => {
+  const { theme } = useTheme();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
@@ -40,10 +42,14 @@ const BorrowSummary = () => {
 
   if (isLoading) {
     return (
-      <div className='container mx-auto p-4 max-w-4xl'>
-        <div className='bg-card text-card-foreground rounded-lg border shadow-sm p-6'>
+      <div className={`container mx-auto p-4 max-w-4xl ${theme === "dark" ? "bg-gray-900" : "bg-white"}`}>
+        <div className={`rounded-lg border shadow-sm p-6 ${
+          theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        }`}>
           <Skeleton className='h-8 w-1/3 mb-6' />
-          <div className='rounded-md border'>
+          <div className={`rounded-md border ${
+            theme === "dark" ? "border-gray-700" : "border-gray-200"
+          }`}>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -73,20 +79,36 @@ const BorrowSummary = () => {
   }
 
   if (isError) {
-    toast.error("Failed to load borrow summary");
+    toast.error("Failed to load borrow summary", {
+      style: {
+        background: theme === "dark" ? "#020817" : "#fff",
+        color: theme === "dark" ? "#fff" : "#000",
+      },
+    });
     return (
-      <div className='container mx-auto p-4 max-w-4xl'>
-        <div className='bg-card text-card-foreground rounded-lg border shadow-sm p-6 text-center'>
+      <div className={`container mx-auto p-4 max-w-4xl ${theme === "dark" ? "bg-gray-900" : "bg-white"}`}>
+        <div className={`rounded-lg border shadow-sm p-6 text-center ${
+          theme === "dark" ? "bg-gray-800 border-gray-700 text-gray-100" : "bg-white border-gray-200"
+        }`}>
           <p className='mb-4'>Failed to load borrow summary</p>
-          <Button onClick={() => refetch()}>Retry</Button>
+          <Button 
+            onClick={() => refetch()}
+            className={theme === "dark" ? "bg-gray-700" : ""}
+          >
+            Retry
+          </Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className='container mx-auto p-4 max-w-4xl'>
-      <div className='bg-card text-card-foreground rounded-lg border shadow-sm p-6'>
+    <div className={`container mx-auto p-4 max-w-4xl ${theme === "dark" ? "bg-gray-900" : "bg-white"}`}>
+      <div className={`rounded-lg border shadow-sm p-6 ${
+        theme === "dark" 
+          ? "bg-gray-800 border-gray-700 text-gray-100" 
+          : "bg-white border-gray-200"
+      }`}>
         <div className='flex justify-between items-center mb-6'>
           <h1 className='text-2xl font-bold'>Borrow Summary</h1>
           <div className='flex items-center gap-4'>
@@ -97,18 +119,27 @@ const BorrowSummary = () => {
                 onValueChange={(value) => {
                   setLimit(Number(value));
                   setPage(1);
-                }}>
-                <SelectTrigger className='w-[100px]'>
+                }}
+              >
+                <SelectTrigger className={`w-[100px] ${
+                  theme === "dark" ? "bg-gray-700 border-gray-600" : ""
+                }`}>
                   <SelectValue placeholder='10' />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className={
+                  theme === "dark" ? "bg-gray-800 border-gray-700" : ""
+                }>
                   <SelectItem value='10'>10</SelectItem>
                   <SelectItem value='20'>20</SelectItem>
                   <SelectItem value='50'>50</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <Button onClick={() => refetch()} variant='outline'>
+            <Button 
+              onClick={() => refetch()} 
+              variant='outline'
+              className={theme === "dark" ? "border-gray-600" : ""}
+            >
               Refresh
             </Button>
           </div>
@@ -116,19 +147,23 @@ const BorrowSummary = () => {
 
         {borrowsData.length === 0 ? (
           <div className='text-center py-12'>
-            <BookOpenIcon className='mx-auto h-12 w-12 text-muted-foreground mb-4' />
+            <BookOpenIcon className={`mx-auto h-12 w-12 mb-4 ${
+              theme === "dark" ? "text-gray-500" : "text-gray-400"
+            }`} />
             <h3 className='text-lg font-medium'>No borrow records found</h3>
-            <p className='text-muted-foreground mt-2'>
+            <p className={`mt-2 ${
+              theme === "dark" ? "text-gray-400" : "text-gray-600"
+            }`}>
               There are currently no books borrowed from the library.
             </p>
           </div>
         ) : (
           <>
-            {/* Borrow Summary Table */}
             <BorrowSummaryTable BorrowsData={borrowsData} />
-            {/* Pagination Controls */}
             <div className='flex items-center justify-between mt-6'>
-              <div className='text-sm text-muted-foreground'>
+              <div className={`text-sm ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}>
                 Showing {borrowsData.length} of {meta.total} records
               </div>
               <div className='flex items-center gap-2'>
@@ -136,17 +171,23 @@ const BorrowSummary = () => {
                   variant='outline'
                   size='icon'
                   onClick={handlePreviousPage}
-                  disabled={page === 1}>
+                  disabled={page === 1}
+                  className={theme === "dark" ? "border-gray-600" : ""}
+                >
                   <ChevronLeft className='h-4 w-4' />
                 </Button>
-                <span>
+                <span className={
+                  theme === "dark" ? "text-gray-300" : "text-gray-700"
+                }>
                   Page {page} of {meta.totalPages}
                 </span>
                 <Button
                   variant='outline'
                   size='icon'
                   onClick={handleNextPage}
-                  disabled={page >= meta.totalPages}>
+                  disabled={page >= meta.totalPages}
+                  className={theme === "dark" ? "border-gray-600" : ""}
+                >
                   <ChevronRight className='h-4 w-4' />
                 </Button>
               </div>
