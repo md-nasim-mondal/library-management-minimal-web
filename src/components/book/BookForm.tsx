@@ -12,13 +12,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { IBook } from "@/types";
 
-interface BookFormProps {
+interface IBookFormProps {
   defaultValues?: IBook;
   onSubmit: (data: Omit<IBook, "id">) => void;
   isLoading: boolean;
 }
 
-const BookForm = ({ defaultValues, onSubmit, isLoading }: BookFormProps) => {
+const BookForm = ({ defaultValues, onSubmit, isLoading }: IBookFormProps) => {
   const form = useForm<Omit<IBook, "id">>({
     defaultValues,
   });

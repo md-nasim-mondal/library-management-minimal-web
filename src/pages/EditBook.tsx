@@ -44,7 +44,7 @@ const EditBook = () => {
       description: "",
       copies: 1,
       available: true,
-      publishedYear: null,
+      publishedYear: undefined,
       image: "",
     },
   });
@@ -253,12 +253,18 @@ const EditBook = () => {
             />
 
             <div className='flex justify-end gap-2'>
-              <Button
+                <Button
                 type='button'
                 variant='outline'
-                onClick={() => navigate(`/books/${book._id}`)}>
+                onClick={() => {
+                  if (window.history.length > 2) {
+                  navigate(-1);
+                  } else {
+                  navigate(`/books/${book._id}`);
+                  }
+                }}>
                 Cancel
-              </Button>
+                </Button>
               <Button type='submit' disabled={isLoading}>
                 {isLoading ? "Saving..." : "Save Changes"}
               </Button>

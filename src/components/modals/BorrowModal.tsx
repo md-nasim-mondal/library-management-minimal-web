@@ -23,14 +23,14 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { cn } from "@/lib/utils";
 
-interface BorrowModalProps {
+interface IBorrowModalProps {
   bookId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   maxQuantity: number;
 }
 
-interface BorrowFormData {
+interface IBorrowFormData {
   book: string;
   quantity: number;
   dueDate: Date;
@@ -41,11 +41,11 @@ const BorrowModal = ({
   open,
   onOpenChange,
   maxQuantity,
-}: BorrowModalProps) => {
+}: IBorrowModalProps) => {
   const { data: book } = useGetBookByIdQuery(bookId);
   const [borrowBook, { isLoading }] = useBorrowBookMutation();
 
-  const form = useForm<BorrowFormData>({
+  const form = useForm<IBorrowFormData>({
     defaultValues: {
       book: bookId,
       quantity: 1,
@@ -53,7 +53,7 @@ const BorrowModal = ({
     },
   });
 
-  const onSubmit = async (data: BorrowFormData) => {
+  const onSubmit = async (data: IBorrowFormData) => {
     try {
       await borrowBook({
         book: bookId,

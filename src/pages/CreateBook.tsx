@@ -35,7 +35,7 @@ const CreateBook = () => {
       description: "",
       copies: 1,
       available: true,
-      publishedYear: null,
+      publishedYear: undefined,
       image: "",
     },
   });
@@ -144,7 +144,7 @@ const CreateBook = () => {
                         onChange={(e) =>
                           field.onChange(
                             e.target.value === ""
-                              ? null
+                              ? undefined
                               : parseInt(e.target.value)
                           )
                         }

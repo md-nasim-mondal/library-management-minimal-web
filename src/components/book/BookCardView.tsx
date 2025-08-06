@@ -10,7 +10,7 @@ interface IBookCardProps {
 }
 
 const BookCardView = ({ books, showDescription = false }: IBookCardProps) => {
-  const [selectedBook, setSelectedBook] = useState<IBook | null>(null);
+  const [selectedBook, setSelectedBook] = useState<IBook | undefined>(undefined);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isBorrowDialogOpen, setIsBorrowDialogOpen] = useState(false);
 

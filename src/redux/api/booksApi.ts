@@ -1,14 +1,43 @@
+import type { IBook } from "@/types";
 import { baseApi } from "./baseApi";
+
+interface IBooksResponse {
+  data: IBook[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
 
 export const booksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getBooks: builder.query({
-      query: () => "/books",
+    getBooks: builder.query<
+      IBooksResponse,
+      {
+        page?: number;
+        limit?: number;
+        filter?: string;
+        sortBy?: string;
+        sort?: string;
+      }
+    >({
+      query: (params) => ({
+        url: "/books",
+        params: {
+          page: params.page || 1,
+          limit: params.limit || 10,
+          ...(params.filter && { filter: params.filter }),
+          sortBy: params.sortBy || "createdAt",
+          sort: params.sort || "desc",
+        },
+      }),
       providesTags: ["Book"],
     }),
     getBookById: builder.query({
       query: (id) => `/books/${id}`,
-      providesTags: (_result, _error, id) => [{ type: "Book", id }],
+      providesTags: ["Book"],
     }),
     addBook: builder.mutation({
       query: (book) => ({
@@ -21,7 +50,9 @@ export const booksApi = baseApi.injectEndpoints({
     updateBook: builder.mutation({
       query: ({ _id, ...rest }) => {
         if (!_id || typeof _id !== "string" || !_id.trim()) {
-          throw new Error("Book _id is required and must be a valid string for update.");
+          throw new Error(
+            "Book _id is required and must be a valid string for update."
+          );
         }
         return {
           url: `/books/${_id}`,
@@ -29,8 +60,7 @@ export const booksApi = baseApi.injectEndpoints({
           body: rest,
         };
       },
-      invalidatesTags: (_result, _error, { _id }) =>
-        _id ? [{ type: "Book", id: _id }] : [],
+      invalidatesTags: ["Book"],
     }),
     deleteBook: builder.mutation({
       query: (id) => ({

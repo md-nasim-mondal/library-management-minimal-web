@@ -8,7 +8,7 @@ export interface IBook {
   available: boolean;
   description?: string;
   image?: string;
-  publishedYear?: number | null;
+  publishedYear?: number | undefined;
   updatedAt?: Date | string;
   createdAt?: Date | string;
 }

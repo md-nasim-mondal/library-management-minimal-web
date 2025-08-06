@@ -16,7 +16,7 @@ import type { IBook } from "@/types";
 interface IBookDeleteAlertDialogProps {
   isDeleteDialogOpen: boolean;
   setIsDeleteDialogOpen: (isDeleteDialogOpen: boolean) => void;
-  selectedBook: IBook | null;
+  selectedBook: IBook | undefined;
 }
 
 const BookDeleteAlertDialog = ({
