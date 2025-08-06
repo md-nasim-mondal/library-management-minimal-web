@@ -4,8 +4,8 @@ import { baseApi } from "./baseApi";
 export const borrowsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     borrowBook: builder.mutation<IBorrow, IBorrowBookRequest>({
-      query: ({ bookId, ...body }) => ({
-        url: `/borrow/${bookId}`,
+      query: (body) => ({
+        url: `/borrow`,
         method: "POST",
         body,
       }),

@@ -15,7 +15,7 @@ export interface IBook {
 
 export interface IBorrow {
   _id?: string;
-  bookId: string;
+  book: string;
   quantity: number;
   dueDate: string;
   returned: boolean;
@@ -33,7 +33,7 @@ export interface IBorrowSummary {
 }
 
 export interface IBorrowBookRequest {
-  bookId: string;
+  book: string;
   quantity: number;
   dueDate: string;
 }
