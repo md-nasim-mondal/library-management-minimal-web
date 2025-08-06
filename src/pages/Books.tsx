@@ -55,11 +55,13 @@ const Books = () => {
     <div className='space-y-6'>
       <div className='flex gap-4 items-center justify-center'>
         <BookCopy className='h-10 w-10' strokeWidth={1.5} />
-        <h1 className='text-3xl font-bold'>Our Book Collection</h1>
+        <h1 className='text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold'>
+          Our Book Collection
+        </h1>
       </div>
 
       {/* Filter and Sort Controls */}
-      <div className='flex flex-wrap gap-4 items-center justify-center p-4 bg-muted/50 rounded-lg'>
+      <div className='flex flex-wrap gap-4 items-center justify-center p-4 bg-muted/50 rounded-lg mx-4'>
         {/* Genre Filter */}
         <div className='flex items-center gap-2'>
           <Label>Genre:</Label>
