@@ -10,7 +10,7 @@ import router from "./routes/index.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider
-      defaultTheme='system'
+      defaultTheme='dark'
       storageKey='library-management-ui-theme'>
       <Provider store={store}>
         <RouterProvider router={router} />
